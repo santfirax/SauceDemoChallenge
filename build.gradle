@@ -1,0 +1,46 @@
+group 'com.challenge'
+version '1.0'
+
+repositories {
+    jcenter()
+    mavenLocal()
+}
+buildscript {
+    repositories {
+        mavenLocal()
+        jcenter()
+    }
+    dependencies {
+        classpath("net.serenity-bdd:serenity-gradle-plugin:2.4.24")
+        classpath "org.jfrog.buildinfo:build-info-extractor-gradle:4.24.20"
+    }
+    apply from: "$rootDir/buildscripts/init-properties.gradle"
+}
+
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+apply plugin: 'net.serenity-bdd.aggregator'
+apply plugin: 'maven-publish'
+apply plugin: 'jacoco'
+dependencies {
+    implementation(
+            [group: 'net.serenity-bdd', name: 'serenity-junit', version: versions['serenityCoreVersion']],
+            [group: 'net.serenity-bdd', name: 'serenity-screenplay', version: versions['serenityCoreVersion']],
+            [group: 'net.serenity-bdd', name: 'serenity-screenplay-webdriver', version: versions['serenityCoreVersion']],
+            [group: 'net.serenity-bdd', name: 'serenity-cucumber6', version: versions['serenityCoreVersion']],
+    )
+    testImplementation(
+            [group: 'junit', name: 'junit', version: versions['junitVersion']],
+            [group: 'net.serenity-bdd', name: 'serenity-junit', version: versions['serenityCoreVersion']],
+            [group: 'net.serenity-bdd', name: 'serenity-core', version: versions['serenityCoreVersion']],
+            [group: 'org.slf4j', name: 'slf4j-simple', version: versions['sl4jVersion']],
+    )
+}
+
+test {
+    testLogging.showStandardStreams = true
+    systemProperties System.getProperties()
+}
+test.finalizedBy(aggregate, reports)
+gradle.startParameter.continueOnFailure = true
