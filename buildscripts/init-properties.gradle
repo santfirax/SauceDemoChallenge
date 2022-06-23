@@ -1,0 +1,8 @@
+task initVersionsProperties {
+    group 'init-properties'
+    println 'Reading versions.properties file'
+    project.ext.set("versions", new Properties())
+    file("$rootDir/versions.properties").withInputStream {
+        stream -> project.versions.load(stream)
+    }
+}
